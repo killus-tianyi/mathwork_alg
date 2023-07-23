@@ -1,0 +1,51 @@
+
+%三种不同的权重求解方案
+function weight = calculateArithmeticWeight(matrix)
+    sumColumn = sum(matrix);
+    sumMatrix = repmat(sumColumn, size(matrix, 1), 1);
+    weight = sum(matrix ./ sumMatrix, 2) ./ size(matrix, 1);
+end
+
+function weight = calculateGeometricWeight(matrix)
+    productRow = prod(matrix, 2);
+    weight = productRow .^ (1 / size(matrix, 1)) ./ sum(productRow .^ (1 / size(matrix, 1)));
+end
+
+function weight = calculateEigenvectorWeight(matrix)
+    [eigenvectors, eigenvalues] = eig(matrix);
+    maxEigenvalue = max(max(eigenvalues));
+    [~, col] = find(eigenvalues == maxEigenvalue, 1);
+    weight = eigenvectors(:, col) ./ sum(eigenvectors(:, col));
+end
+
+disp('请输入判断矩阵A');
+judMatrix = input('judMatrix = ');
+[n, ~] = size(judMatrix);
+
+% 计算一致性指标 CI 和一致性比例 CR
+consistencyIndex = (max(eig(judMatrix)) - n) / (n - 1);
+randomIndexList = [0 0.0001 0.52 0.89 1.12 1.26 1.36 1.41 1.46 1.49 1.52 1.54 1.56 1.58 1.59];
+consistencyRatio = consistencyIndex / randomIndexList(n);
+
+disp('一致性指标 CI = ');
+disp(consistencyIndex);
+disp('一致性比例 CR = ');
+disp(consistencyRatio);
+
+if consistencyRatio < 0.10
+    disp('因为 CR < 0.10，所以该判断矩阵的一致性可以接受!');
+else
+    disp('注意：CR >= 0.10，因此该判断矩阵需要进行修改!');
+end
+
+% 方法1：算术平均法求权重
+disp('算术平均法求权重的结果为：');
+disp(calculateArithmeticWeight(judMatrix));
+
+% 方法2：几何平均法求权重
+disp('几何平均法求权重的结果为：');
+disp(calculateGeometricWeight(judMatrix));
+
+% 方法3：特征值法求权重
+disp('特征值法求权重的结果为：');
+disp(calculateEigenvectorWeight(judMatrix));  
