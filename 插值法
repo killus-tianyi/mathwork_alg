@@ -1,0 +1,34 @@
+disp('sample point axix')
+x=input('please enter the x value: ');
+y=input('please enter the y value: ');
+new_x =input('please enter the inserted point: '); 
+disp('pleae choose the type of insertion,0 for pchip,1 for spline,2 for mixture')
+type=input('Type: ');
+if type == 0
+        p1 = pchip(x,y,new_x);%分段三次埃尔米特插值
+        plot(x, y, '-o', new_x, p1, 'r:')
+% plot函数用法:
+% plot(x1,y1,x2,y2) 
+% 线方式： - 实线 :点线 -. 虚点线 - - 波折线 
+% 点方式： . 圆点  +加号  * 星号  x x形  o 小圆
+% 颜色： y黄； r红； g绿； b蓝； w白； k黑； m紫； c青
+elseif type ==1
+        p2=spline(x,y,new_x);%三次样条插值
+        plot(x,y,'-o',new_x,p2,'r-.')
+else
+        p1 = pchip(x,y,new_x);
+        p2=spline(x,y,new_x);%三次样条插值
+        plot(x,y,'-o',new_x,p1,'r:',new_x,p2,'-.g')
+        legend('样本点','三次埃尔米特插值','三次样条插值','Location','SouthEast') %标注显示在东南方向,‘Location’用来指定标注显示的位置
+% LEGEND(string1,string2,string3, …)
+% 分别将字符串1、字符串2、字符串3……标注到图中，每个字符串对应的图标为画图时的图标。
+end
+
+% figure(1);  在同一个脚本文件里面，要想画多个图，需要给每个图编号，否则只会显示最后一个图哦~
+% % n维数据的插值
+% x = -pi:pi; y = sin(x); 
+% new_x = -pi:0.1:pi;
+% p = interpn (x, y, new_x, 'spline');
+% % 等价于 p = spline(x, y, new_x);
+% figure(3);
+% plot(x, y, 'o', new_x, p, 'r-')
